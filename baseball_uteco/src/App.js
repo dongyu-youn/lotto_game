@@ -29,9 +29,29 @@ class App {
     let isLength = inputs.length === 3;
     let isSame = new Set(inputs).size === 3;
     let isNumber = inputs.every((v) => !isNaN(v) && v !== "0");
-    if (!isLength && !isSame && !isNumber) {
+
+    // 하나라도 조건을 만족하지 않으면 예외 발생
+    if (!isLength || !isSame || !isNumber) {
       throw new Error("정확한 3개의 숫자를 입력해주세요");
     }
+  }
+
+  AnswerCorrect(computer, myanswer) {
+    let strikes = 0;
+    let balls = 0;
+    for (let i = 0; i < 3; i++) {
+      if (computer[i] === myanswer[i]) {
+        console.log("strike");
+        strikes++;
+      } else if (computer.includes(myanswer[i])) {
+        console.log("ball");
+        balls++;
+      }
+    }
+    if (strikes == 0 && balls == 0) {
+      console.log("낫싱");
+    }
+    return { strikes, balls };
   }
 }
 

@@ -4,20 +4,19 @@ const MissionUtils = require("@woowacourse/mission-utils");
 describe("App 클래스 테스트", () => {
   let app;
 
+  // 각 테스트 전에 App 인스턴스를 생성
   beforeEach(() => {
     app = new App();
   });
 
-  // readLine과 pickUniqueNumbersInRange를 mock 처리
+  // MissionUtils의 readLine과 Random을 mock 처리
   beforeAll(() => {
     jest
       .spyOn(MissionUtils.Console, "readLine")
       .mockImplementation((message, callback) => {
-        // 적절한 상황별로 mock 처리된 입력을 반환
         if (message === "3개의 값을 공백으로 구분하여 입력하시오") {
           callback("1 2 3");
-        }
-        if (message === "게임을 시작하겠습니다") {
+        } else if (message === "게임을 시작하겠습니다") {
           callback("게임 시작!");
         }
       });
@@ -32,7 +31,9 @@ describe("App 클래스 테스트", () => {
   });
 
   test("play 메서드 테스트 - 게임 시작 메시지 출력", () => {
-    const spyConsoleLog = jest.spyOn(console, "log");
+    const spyConsoleLog = jest
+      .spyOn(console, "log")
+      .mockImplementation(() => {});
 
     app.play();
 
@@ -45,47 +46,50 @@ describe("App 클래스 테스트", () => {
     expect(randomNumbers).toEqual([4, 5, 6]); // Mock 처리된 값이 반환되는지 확인
   });
 
-  test("NumberInput 메서드가 3개의 값을 공백으로 구분하여 입력받는지 테스트", () => {
+  test("NumberInput 메서드가 공백으로 구분된 3개의 값을 입력받는지 테스트", () => {
     const spyConsoleLog = jest
       .spyOn(console, "log")
       .mockImplementation(() => {});
 
-    // NumberInput 실행 전에 spy 초기화
+    // 이전 로그 호출 기록을 모두 지움
     jest.clearAllMocks();
 
     app.NumberInput();
 
-    // 입력 값이 순서대로 잘 출력되는지 확인
-    expect(spyConsoleLog).toHaveBeenNthCalledWith(1, "1"); // 첫 번째 값
-    expect(spyConsoleLog).toHaveBeenNthCalledWith(2, "2"); // 두 번째 값
-    expect(spyConsoleLog).toHaveBeenNthCalledWith(3, "3"); // 세 번째 값
+    // 입력된 값이 순서대로 출력되는지 확인
+    expect(spyConsoleLog).toHaveBeenNthCalledWith(1, "1");
+    expect(spyConsoleLog).toHaveBeenNthCalledWith(2, "2");
+    expect(spyConsoleLog).toHaveBeenNthCalledWith(3, "3");
   });
 
-  test("exception 메서드 테스트 - 올바른 3자리 숫자 입력", () => {
-    const validInput = ["1", "2", "3"];
-    const result = app.exception(validInput);
+  test("exception 메서드 테스트 - 올바르지 않은 입력 시 예외 발생", () => {
+    // 중복된 값이 있는 경우 예외 발생 테스트
+    expect(() => {
+      app.exception(["1", "1", "2"]);
+    }).toThrowError("정확한 3개의 숫자를 입력해주세요");
 
-    expect(result).toBe(true); // 유효한 입력의 경우 true 반환
+    // 숫자가 아닌 값이 포함된 경우 예외 발생 테스트
+    expect(() => {
+      app.exception(["1", "2", "a"]);
+    }).toThrowError("정확한 3개의 숫자를 입력해주세요");
+
+    // 0이 포함된 경우 예외 발생 테스트
+    expect(() => {
+      app.exception(["1", "2", "0"]);
+    }).toThrowError("정확한 3개의 숫자를 입력해주세요");
   });
 
-  test("exception 메서드 테스트 - 중복된 숫자가 있는 입력", () => {
-    const invalidInput = ["1", "1", "2"];
-    const result = app.exception(invalidInput);
+  test("AnswerCorrect 메서드 테스트 - 스트라이크와 볼 계산", () => {
+    const result = app.AnswerCorrect([1, 2, 3], [1, 3, 2]);
 
-    expect(result).toBe(false); // 중복된 숫자가 있으면 false 반환
-  });
+    expect(result).toEqual({ strikes: 1, balls: 2 });
 
-  test("exception 메서드 테스트 - 숫자가 아닌 입력 포함", () => {
-    const invalidInput = ["1", "2", "a"];
-    const result = app.exception(invalidInput);
+    const resultAllStrike = app.AnswerCorrect([1, 2, 3], [1, 2, 3]);
 
-    expect(result).toBe(false); // 숫자가 아닌 값이 있으면 false 반환
-  });
+    expect(resultAllStrike).toEqual({ strikes: 3, balls: 0 });
 
-  test("exception 메서드 테스트 - 0이 포함된 입력", () => {
-    const invalidInput = ["1", "0", "2"];
-    const result = app.exception(invalidInput);
+    const resultNothing = app.AnswerCorrect([1, 2, 3], [4, 5, 6]);
 
-    expect(result).toBe(false); // 0이 포함된 경우 false 반환
+    expect(resultNothing).toEqual({ strikes: 0, balls: 0 });
   });
 });
