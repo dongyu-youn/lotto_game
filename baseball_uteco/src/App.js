@@ -53,6 +53,28 @@ class App {
     }
     return { strikes, balls };
   }
+
+  isResult(obj) {
+    // 객체의 값들이 모두 0이면 "낫싱" 출력
+    if (Object.values(obj).every((value) => value === 0)) {
+      MissionUtils.Console.print("낫싱");
+      return;
+    }
+
+    // 결과 출력
+    let result = [];
+
+    // 객체의 각 키와 값을 체크하여 결과 문구 추가
+    if (obj.ball > 0) {
+      result.push(`${obj.ball}볼`);
+    }
+    if (obj.strike > 0) {
+      result.push(`${obj.strike}스트라이크`);
+    }
+
+    // 출력
+    MissionUtils.Console.print(result.join(" "));
+  }
 }
 
 module.exports = App;
