@@ -72,8 +72,21 @@ class App {
       result.push(`${obj.strike}스트라이크`);
     }
 
+    
+
     // 출력
     MissionUtils.Console.print(result.join(" "));
+  }
+  playgame() {
+    let result;
+    do {
+      const myanswer = this.NumberInput();
+      //플레이어정답과 컴퓨터 비교
+      result = this.AnswerCorrect(this.RandomPick, myanswer);
+      this.isResult(result)
+  
+    }
+    while ()
   }
 }
 
