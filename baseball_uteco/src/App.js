@@ -13,6 +13,18 @@ class App {
     let random = MissionUtils.Random.pickUniqueNumbersInRange(1, 9, 3);
     return random;
   }
+  NumberInput() {
+    MissionUtils.Console.readLine(
+      "3개의 값을 공백으로 구분하여 입력하시오",
+      (input) => {
+        const inputs = input.split("");
+        // 배열의 각 요소 출력
+        console.log(`${inputs[0]}`);
+        console.log(`${inputs[1]}`);
+        console.log(`${inputs[2]}`);
+      }
+    );
+  }
 }
 
 module.exports = App;
