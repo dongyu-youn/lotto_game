@@ -25,6 +25,15 @@ class App {
       }
     );
   }
+  exception(inputs) {
+    let isLength = inputs.length === 3;
+    let isSame = new Set(inputs).size === 3;
+    let isNumber = inputs.filter((v) => !isNaN(v) && v !== "0").length === 0;
+    if (isLength && isSame && isNumber) {
+      return true;
+    }
+    return false;
+  }
 }
 
 module.exports = App;
