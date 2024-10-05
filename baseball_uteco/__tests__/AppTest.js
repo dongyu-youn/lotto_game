@@ -45,11 +45,17 @@ describe("App 클래스 테스트", () => {
     expect(randomNumbers).toEqual([4, 5, 6]); // Mock 처리된 값이 반환되는지 확인
   });
 
-  test("NumberInput 메서드 테스트 - 3개의 값을 공백으로 구분하여 입력받음", () => {
-    const spyConsoleLog = jest.spyOn(console, "log");
+  test("NumberInput 메서드가 3개의 값을 공백으로 구분하여 입력받는지 테스트", () => {
+    const spyConsoleLog = jest
+      .spyOn(console, "log")
+      .mockImplementation(() => {});
+
+    // NumberInput 실행 전에 spy 초기화
+    jest.clearAllMocks();
 
     app.NumberInput();
 
+    // 입력 값이 순서대로 잘 출력되는지 확인
     expect(spyConsoleLog).toHaveBeenNthCalledWith(1, "1"); // 첫 번째 값
     expect(spyConsoleLog).toHaveBeenNthCalledWith(2, "2"); // 두 번째 값
     expect(spyConsoleLog).toHaveBeenNthCalledWith(3, "3"); // 세 번째 값

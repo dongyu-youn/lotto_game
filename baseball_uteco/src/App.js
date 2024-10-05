@@ -17,7 +17,7 @@ class App {
     MissionUtils.Console.readLine(
       "3개의 값을 공백으로 구분하여 입력하시오",
       (input) => {
-        const inputs = input.split("");
+        const inputs = input.split(" ");
         // 배열의 각 요소 출력
         console.log(`${inputs[0]}`);
         console.log(`${inputs[1]}`);
@@ -28,11 +28,10 @@ class App {
   exception(inputs) {
     let isLength = inputs.length === 3;
     let isSame = new Set(inputs).size === 3;
-    let isNumber = inputs.filter((v) => !isNaN(v) && v !== "0").length === 0;
-    if (isLength && isSame && isNumber) {
-      return true;
+    let isNumber = inputs.every((v) => !isNaN(v) && v !== "0");
+    if (!isLength && !isSame && !isNumber) {
+      throw new Error("정확한 3개의 숫자를 입력해주세요");
     }
-    return false;
   }
 }
 
